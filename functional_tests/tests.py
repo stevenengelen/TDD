@@ -23,15 +23,8 @@ class NewVisitorTest(LiveServerTestCase) :
         WebDriverWait(self.browser, timeout).until(staleness_of(old_page))
 
     def check_for_row_in_list_table(self, row_text) :
-        try :
-            table = self.browser.find_element_by_id('id_list_table')
-            rows = table.find_elements_by_tag_name('tr')
-        except StaleElementReferenceException :
-            # wait for all the elements to be attached to the DOM (stale exception selenium)
-            print('In except condition......')
-            self.browser.implicitly_wait(3)
-            table = self.browser.find_element_by_id('id_list_table')
-            rows = table.find_elements_by_tag_name('tr')
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
         self.assertIn(row_text, [row.text for row in rows])
 
     def test_can_start_a_list_and_retrieve_it_later(self) :
@@ -49,9 +42,8 @@ class NewVisitorTest(LiveServerTestCase) :
         inputbox.send_keys(Keys.ENTER)
 
         # She gets redirected to her URL, sees her list and her item.
-        with self.wait_for_page_load(timeout = 10) :
+        with self.wait_for_page_load() :
             edith_list_url = self.browser.current_url
-        print(edith_list_url)
         self.assertRegex(edith_list_url, '/lists/.+')
         self.check_for_row_in_list_table('1: Buy peacock feathers')
 
@@ -61,8 +53,9 @@ class NewVisitorTest(LiveServerTestCase) :
         inputbox.send_keys(Keys.ENTER)
         
         # She sees the 2 To-Do's.
-        self.check_for_row_in_list_table('1: Buy peacock feathers')
-        self.check_for_row_in_list_table('2: Use peacock feathers to make a fly')
+        with self.wait_for_page_load() :
+            self.check_for_row_in_list_table('1: Buy peacock feathers')
+            self.check_for_row_in_list_table('2: Use peacock feathers to make a fly')
 
         # Francis comes along
         # Francis launches a new browser sesion (to make sure there are no cookies left).
@@ -81,7 +74,8 @@ class NewVisitorTest(LiveServerTestCase) :
         inputbox.send_keys(Keys.ENTER)
 
         # Francis gets his URL
-        francis_list_url = self.browser.current_url
+        with self.wait_for_page_load() :
+            francis_list_url = self.browser.current_url
         self.assertRegex(francis_list_url, '/lists/.+')
         self.assertNotEqual(francis_list_url, edith_list_url)
 
@@ -104,8 +98,7 @@ class NewVisitorTest(LiveServerTestCase) :
         self.browser.set_window_size(1024, 768)
 
         # She notices the input box is nicely centered
-        inputbox = self.browser.find_elements_by_id('id_new_item')
-        print(inputbox)
+        inputbox = self.browser.find_element_by_id('id_new_item')
         self.assertAlmostEqual(
                 inputbox.location['x'] + inputbox.size['width'] / 2,
                 512,
