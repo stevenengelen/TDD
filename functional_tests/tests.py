@@ -17,13 +17,18 @@ class NewVisitorTest(LiveServerTestCase) :
         self.browser.quit()
 
     @contextmanager
-    def wait_for_page_load(self, timeout = 50) :
+    def wait_for_page_load(self, timeout = 30) :
         old_page = self.browser.find_element_by_tag_name('html')
         yield
         WebDriverWait(self.browser, timeout).until(staleness_of(old_page))
 
     def check_for_row_in_list_table(self, row_text) :
-        table = self.browser.find_element_by_id('id_list_table')
+        start_time = time.time()
+        while time.time() < start_time + 10 :
+            try :
+                table = self.browser.find_element_by_id('id_list_table')
+            except StaleElementReferenceException :
+                time.sleep(0.1)
         rows = table.find_elements_by_tag_name('tr')
         self.assertIn(row_text, [row.text for row in rows])
 
@@ -53,9 +58,8 @@ class NewVisitorTest(LiveServerTestCase) :
         inputbox.send_keys(Keys.ENTER)
         
         # She sees the 2 To-Do's.
-        with self.wait_for_page_load() :
-            self.check_for_row_in_list_table('1: Buy peacock feathers')
-            self.check_for_row_in_list_table('2: Use peacock feathers to make a fly')
+        self.check_for_row_in_list_table('1: Buy peacock feathers')
+        self.check_for_row_in_list_table('2: Use peacock feathers to make a fly')
 
         # Francis comes along
         # Francis launches a new browser sesion (to make sure there are no cookies left).
@@ -98,6 +102,21 @@ class NewVisitorTest(LiveServerTestCase) :
         self.browser.set_window_size(1024, 768)
 
         # She notices the input box is nicely centered
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertAlmostEqual(
+                inputbox.location['x'] + inputbox.size['width'] / 2,
+                512,
+                delta = 5
+                )
+
+        # She starts a new list and sees the input is nicely centered here too
+        inputbox.send_keys('testing')
+        inputbox.send_keys(Keys.ENTER)
+        
+        with self.wait_for_page_load() :
+            edith_list_url = self.browser.current_url
+        self.assertRegex(edith_list_url, '/lists/.+')
+        
         inputbox = self.browser.find_element_by_id('id_new_item')
         self.assertAlmostEqual(
                 inputbox.location['x'] + inputbox.size['width'] / 2,
