@@ -17,7 +17,7 @@ class NewVisitorTest(LiveServerTestCase) :
         self.browser.quit()
 
     @contextmanager
-    def wait_for_page_load(self, timeout = 30) :
+    def wait_for_page_load(self, timeout = 50) :
         old_page = self.browser.find_element_by_tag_name('html')
         yield
         WebDriverWait(self.browser, timeout).until(staleness_of(old_page))
