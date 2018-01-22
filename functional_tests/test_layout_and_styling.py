@@ -10,7 +10,7 @@ class LayoutAndStylingTest(FunctionalTest) :
         # self.browser.set_window_size(1024, 768)
 
         # She notices the input box is nicely centered
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox = self.get_item_input_box()
         # using i3, so calculating a terminal next to a browser window in the test below
         self.assertAlmostEqual(
                 inputbox.location['x'] + inputbox.size['width'] / 2,
@@ -26,7 +26,7 @@ class LayoutAndStylingTest(FunctionalTest) :
         edith_list_url = self.browser.current_url
         self.assertRegex(edith_list_url, '/lists/.+')
 
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox = self.get_item_input_box()
         # using i3, so calculating a terminal next to a browser window in the test below
         self.assertAlmostEqual(
                 inputbox.location['x'] + inputbox.size['width'] / 2,
