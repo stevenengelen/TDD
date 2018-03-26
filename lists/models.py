@@ -1,6 +1,5 @@
 from django.db import models
-# from django.core.urlresolvers import reverse
-from django.urls import reverse
+from django.core.urlresolvers import reverse
 
 class List(models.Model) :
     def get_absolute_url(self) :
