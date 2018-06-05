@@ -1,3 +1,4 @@
+import os
 from selenium import webdriver
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 import sys
@@ -6,14 +7,33 @@ from selenium.common.exceptions import WebDriverException
 
 MAX_WAIT = 10
 
+
+# the decorator definition
+def wait(fn) :
+    def modified_fn(*args, **kwargs) :
+        start_time = time.time()
+        while True :
+            try :
+                return fn(*args, **kwargs)
+            except (AssertionError, WebDriverException) as e :
+                if time.time() - start_time > MAX_WAIT :
+                    raise e
+                time.sleep(0.5)
+    return modified_fn
+
 class FunctionalTest(StaticLiveServerTestCase) :
+
     def setUp(self) :
         self.browser = webdriver.Chrome()
-        self.browser.implicitly_wait(3)
+        self.staging_server = os.environ.get('STAGING_SERVER')
+        if self.staging_server :
+            self.live_server_url = 'http://' + self.staging_server
+            reset_database(self.staging_server)
 
     def tearDown(self) :
         self.browser.quit()
 
+    '''
     @classmethod
     def setUpClass(cls) :
         for arg in sys.argv :
@@ -24,7 +44,6 @@ class FunctionalTest(StaticLiveServerTestCase) :
         super().setUpClass()
         cls.server_url = cls.live_server_url
 
-    '''
     @classmethod
     def tearDownClass(cls) :
         if cls.server_url == cls.live_server_url :
@@ -41,19 +60,6 @@ class FunctionalTest(StaticLiveServerTestCase) :
 
     def get_error_element(self) :
         return self.browser.find_element_by_css_selector('.has-error')
-
-    # the decorator definition
-    def wait(fn) :
-        def modified_fn(*args, **kwargs) :
-            start_time = time.time()
-            while True :
-                try :
-                    return fn(*args, **kwargs)
-                except (AssertionError, WebDriverException) as e :
-                    if time.time() - start_time > MAX_WAIT :
-                        raise e
-                    time.sleep(0.5)
-        return modified_fn
 
     @wait
     def wait_for_row_in_list_table(self, row_text) :
