@@ -23,7 +23,6 @@ def new_list(request) :
     form = ItemForm(data = request.POST)
     if form.is_valid() :
         list_ = List.objects.create()
-        # form = ExistingListItemForm(for_list = list_, data = request.POST)
         form.save(for_list = list_)
         return redirect(list_)
     else :
