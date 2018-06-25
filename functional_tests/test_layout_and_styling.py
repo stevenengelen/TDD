@@ -19,8 +19,9 @@ class LayoutAndStylingTest(FunctionalTest) :
                 )
 
         # She starts a new list and sees the input is nicely centered here too
-        inputbox.send_keys('testing')
-        inputbox.send_keys(Keys.ENTER)
+        self.add_list_item('testing')
+        # inputbox.send_keys('testing')
+        # inputbox.send_keys(Keys.ENTER)
 
         # with self.wait_for_page_load() :
         edith_list_url = self.browser.current_url
