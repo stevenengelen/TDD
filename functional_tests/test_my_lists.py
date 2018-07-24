@@ -33,7 +33,9 @@ class MyListsTest(FunctionalTest) :
 
         # She sees that her list is in there, named according to its first list item
         self.wait_for(lambda : self.browser.find_element_by_link_text('Reticulate splines'))
-        self.browser.find_element_by_link_text('Immanentize eschaton').click()
+        self.browser.find_element_by_link_text('Reticulate splines').click()
+        # wait condition, so I repeated this assignment here so the FT passes
+        first_list_url = self.browser.current_url
         self.wait_for(lambda : self.assertEqual(self.browser.current_url, first_list_url))
         # self.wait_to_be_logged_in(email)
 
@@ -46,8 +48,10 @@ class MyListsTest(FunctionalTest) :
         self.browser.find_element_by_link_text('My lists').click()
         self.wait_for(lambda : self.browser.find_element_by_link_text('Click cows'))
         self.browser.find_element_by_link_text('Click cows').click()
+        # wait condition, so I repeated this assignment here so the FT passes
+        second_list_url = self.browser.current_url
         self.wait_for(lambda : self.assertEqual(self.browser.current_url, second_list_url))
 
         # She logs out. The "My lists" option dissapears
-        self.browser.find_elements_by_link_text('Log out').click()
-        self.wait_for(lambda : self.assertEqual(self.browser.find_element_by_link_text('My lists'), [] ))
+        self.browser.find_element_by_link_text('Log out').click()
+        self.wait_for(lambda : self.assertEqual(self.browser.find_elements_by_link_text('My lists'), [] ))
