@@ -62,6 +62,7 @@ class NewVisitorTest(FunctionalTest) :
         self.assertNotIn('Buy peacock feathers', page_text)
         self.assertIn('Buy milk', page_text)
 
+        # self.fail('Testing the screenshots')
         # self.fail('Finish the test!')
 
         # The site generates a unique URL
