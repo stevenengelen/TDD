@@ -26,7 +26,7 @@ SECRET_KEY = '^&y%-_@$pl^8^)(9@!+cpmaf2_n$t(q-y873)zfi2m8(9k!p8q'
 DEBUG = False
 # DEBUG = True
 
-ALLOWED_HOSTS = [ 'superlists-staging.localdomain' ]
+ALLOWED_HOSTS = [ 'superlists-staging.localdomain', 'superlists.localdomain' ]
 
 
 # Application definition

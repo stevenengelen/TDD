@@ -10,7 +10,8 @@ def deploy():
     with cd(site_folder):
         _get_latest_source()
         _update_virtualenv()
-        _create_or_update_dotenv()
+        # in the new version of the book, this is not executed
+        # _create_or_update_dotenv()
         _update_static_files()
         _update_database()
 
