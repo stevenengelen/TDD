@@ -17,10 +17,8 @@ class NewVisitorTest(FunctionalTest) :
         self.assertEqual(inputbox.get_attribute('placeholder'), 'Enter a to-do item')
         inputbox.send_keys('Buy peacock feathers')
         inputbox.send_keys(Keys.ENTER)
-        # time.sleep(5)
 
         # She gets redirected to her URL, sees her list and her item.
-        # with self.wait_for_page_load() :
         edith_list_url = self.browser.current_url
         self.assertRegex(edith_list_url, '/lists/.+')
         self.check_for_row_in_list_table('1: Buy peacock feathers')
@@ -29,7 +27,6 @@ class NewVisitorTest(FunctionalTest) :
         inputbox = self.get_item_input_box()
         inputbox.send_keys('Use peacock feathers to make a fly')
         inputbox.send_keys(Keys.ENTER)
-        # time.sleep(5)
 
         # She sees the 2 To-Do's.
         self.check_for_row_in_list_table('1: Buy peacock feathers')
@@ -52,7 +49,6 @@ class NewVisitorTest(FunctionalTest) :
         inputbox.send_keys(Keys.ENTER)
 
         # Francis gets his URL
-        # with self.wait_for_page_load() :
         francis_list_url = self.browser.current_url
         self.assertRegex(francis_list_url, '/lists/.+')
         self.assertNotEqual(francis_list_url, edith_list_url)

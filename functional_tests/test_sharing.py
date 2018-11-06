@@ -1,6 +1,7 @@
 from selenium import webdriver
 from .base import FunctionalTest
 from .list_page import ListPage
+from .my_lists_page import MyListsPage
 
 def quit_if_possible(browser) :
     try : browser.quit()
@@ -14,7 +15,8 @@ class SharingTest(FunctionalTest) :
         self.addCleanup(lambda : quit_if_possible(edith_browser))
 
         # Her friend Oniciferous is also hanging out on the lists site
-        oni_browser = webdriver.Chrome()
+        oni_browser = webdriver.Firefox()
+        # oni_browser = webdriver.Chrome()
         self.addCleanup(lambda : quit_if_possible(oni_browser))
         self.browser = oni_browser
         self.create_pre_authenticated_session('oniciferous@example.com')
@@ -34,10 +36,10 @@ class SharingTest(FunctionalTest) :
 
         # Oniciferious now goes to the lists page with his browser
         self.browser = oni_browser
-        MyListPage(self).go_to_my_lists_page()
+        MyListsPage(self).go_to_my_lists_page()
 
         # He sees Edith's list in there!
-        self.browser.find_element_by_link_text('Get help').click()
+        link = self.browser.find_element_by_link_text('Get help').click()
 
         # On the list page, Oniciferous can see that it's Edith's list
         self.wait_for(lambda : self.assertEqual(list_page.get_list_owner(), 'edith@example.com'))
@@ -48,4 +50,4 @@ class SharingTest(FunctionalTest) :
         # When Edith refreshes the page, she sees Onificerous's addition
         self.browser = edith_browser
         self.browser.refresh()
-        list_page.wait_for_ro_in_list_table('Hi Edith!', 2)
+        list_page.wait_for_row_in_list_table('Hi Edith!', 2)

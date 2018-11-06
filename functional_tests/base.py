@@ -31,7 +31,8 @@ def wait(fn) :
 class FunctionalTest(StaticLiveServerTestCase) :
 
     def setUp(self) :
-        self.browser = webdriver.Chrome()
+        # self.browser = webdriver.Chrome()
+        self.browser = webdriver.Firefox()
         self.staging_server = os.environ.get('STAGING_SERVER')
         if self.staging_server :
             self.live_server_url = 'http://' + self.staging_server
@@ -90,23 +91,6 @@ class FunctionalTest(StaticLiveServerTestCase) :
         self.get_item_input_box().send_keys(Keys.ENTER)
         item_number = num_rows + 1
         self.wait_for_row_in_list_table(f'{item_number}: {item_text}')
-
-    '''
-    @classmethod
-    def setUpClass(cls) :
-        for arg in sys.argv :
-            if 'liveserver' in arg :
-                cls.server_url = 'http://' + arg.split('=')[1]
-                # cls.server_url = cls.live_server_url
-                return
-        super().setUpClass()
-        cls.server_url = cls.live_server_url
-
-    @classmethod
-    def tearDownClass(cls) :
-        if cls.server_url == cls.live_server_url :
-            super().tearDownClass()
-    '''
 
     def check_for_row_in_list_table(self, row_text) :
         table = self.browser.find_element_by_id('id_list_table')

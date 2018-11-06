@@ -47,7 +47,6 @@ class ItemValidationTest(FunctionalTest) :
         self.get_item_input_box().send_keys(Keys.ENTER)
 
         # She sees a helpfull error message
-        # self.check_for_row_in_list_table('1: Buy wellies')
         self.wait_for(lambda : self.assertEqual(self.get_error_element().text, "You've already got this in your list"))
 
     def test_error_messages_are_cleared_on_input(self) :
